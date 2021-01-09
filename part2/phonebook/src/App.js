@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
+import './App.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +12,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
   const [showSearch, setShowSearch] = useState(false)
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -24,6 +28,12 @@ const App = () => {
           .update(persons.find(p => p.name === personObject.name).id, personObject)
           .then(returnedPerson => {
             setPersons(persons.map(p => p.name === personObject.name ? returnedPerson : p))
+            setMessage(
+              `Updated ${returnedPerson.name}`
+            )
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
       }
     } else {
@@ -31,6 +41,12 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setMessage(
+            `Added ${returnedPerson.name}`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
           setNewName('')
           setNewNumber('')
         })
@@ -43,6 +59,16 @@ const App = () => {
         .deletePerson(id)
         .then(returnedPerson => {
           setPersons(persons.filter(p => p.id !== id))
+          setMessage(`Deleted ${name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage(`Infomation of ${name} has already been removed from server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -87,6 +113,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
+      <Notification message={message} errorMessage={errorMessage}/>
       <Persons personsToShow={personsToShow} buttonClick={deletePerson} />
     </div>
   )
