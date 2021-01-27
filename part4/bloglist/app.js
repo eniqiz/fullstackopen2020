@@ -3,6 +3,7 @@ const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
