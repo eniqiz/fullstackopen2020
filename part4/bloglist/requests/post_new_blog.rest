@@ -1,5 +1,6 @@
 POST http://127.0.0.1:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: bearer ...
 
 {
   "title": "example blog",
