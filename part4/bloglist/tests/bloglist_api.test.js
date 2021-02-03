@@ -11,10 +11,28 @@ const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  const userObjects = helper.initialUsers.map(user => new User(user))
+  const promiseArrayUser = userObjects.map(user => user.save())
+  await Promise.all(promiseArrayUser)
+
+  const userAdded = await User.findOne({username: 'example'})
+
+  const blogObjects = helper.initialBlogs.map(blog => {
+    const blogToAdd = new Blog(blog)
+    blogToAdd.user = userAdded._id
+    return blogToAdd
+  })
+  const promiseArrayBlog = blogObjects.map(blog => blog.save())
+  await Promise.all(promiseArrayBlog)
+
+  const query = await Blog.find({})
+  let blogIds = []
+  for (b of query) {
+    blogIds = blogIds.concat(b._id)
+  }
+  await User.findOneAndUpdate({username: 'example'}, {blogs: blogIds})
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -45,7 +63,18 @@ describe('when there is initially some blogs saved', () => {
   })
 })
 
+let jwtString = ''
 describe('add blogs', () => {
+  beforeEach(async () => {
+    await api
+      .post('/api/login')
+      .send({
+        "username": "example",
+        "password": "secret"
+      })
+      .then(response => jwtString = response.body.token)
+  })
+
   test('a valid blog can be added', async () => {
     const newBlog = {
       title: 'new test blog',
@@ -53,9 +82,9 @@ describe('add blogs', () => {
       url: 'http://example.com',
       likes: 20
     }
-
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer ' + jwtString)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -76,6 +105,7 @@ describe('add blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer ' + jwtString)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -95,6 +125,7 @@ describe('add blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer ' + jwtString)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/)
@@ -105,12 +136,24 @@ describe('add blogs', () => {
 })
 
 describe('deletion of a blog', () => {
+  beforeEach(async () => {
+    await api
+      .post('/api/login')
+      .send({
+        "username": "example",
+        "password": "secret"
+      })
+      .expect(200)
+      .then(response => jwtString = response.body.token)
+  })
+
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', 'bearer ' + jwtString)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -123,6 +166,17 @@ describe('deletion of a blog', () => {
 })
 
 describe('update likes of a blog', () => {
+  beforeEach(async () => {
+    await api
+      .post('/api/login')
+      .send({
+        "username": "example",
+        "password": "secret"
+      })
+      .expect(200)
+      .then(response => jwtString = response.body.token)
+  })
+
   test('update likes of React patterns to 100', async () => {
     const blogsAtStart = await helper.blogsInDb()
     let blogToUpdate = blogsAtStart.filter(b => b.title === 'React patterns')[0]
@@ -130,6 +184,7 @@ describe('update likes of a blog', () => {
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', 'bearer ' + jwtString)
       .send(blogToUpdate)
       .expect(200)
 

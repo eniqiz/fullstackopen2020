@@ -1,5 +1,6 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 const initialBlogs = [{
   title: 'React patterns',
@@ -33,6 +34,13 @@ const initialBlogs = [{
   likes: 2
 }]
 
+const initialUsers = [{
+  username: 'example',
+  name: 'Example',
+  // 'secret'
+  passwordHash: '$2b$10$IlLgkbGw/Ju35N7qvqdAc.33YACMOS8wcWjjkAB.QwotNeV.BZ0ZG'
+}]
+
 const nonExistingId = async () => {
   const blog = new Blog({
     title: 'new test blog that is not exist',
@@ -58,6 +66,7 @@ const usersInDb = async () => {
 
 module.exports = {
   initialBlogs,
+  initialUsers,
   nonExistingId,
   blogsInDb,
   usersInDb
