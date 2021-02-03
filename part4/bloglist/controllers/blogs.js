@@ -4,7 +4,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', {username: 1, name: 1})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
@@ -48,7 +48,7 @@ blogsRouter.delete('/:id', async (request, response) => {
   if ( blog.user.toString() === decodedToken.id ) {
     await Blog.findByIdAndDelete(request.params.id)
     return response.status(204).end()
-  } 
+  }
 
   return response.status(401).json({ error: 'Unauthorized' })
 })
@@ -58,7 +58,7 @@ blogsRouter.put('/:id', async (request, response) => {
   if (!request.token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
-  
+
   const body = request.body
 
   const blog = {

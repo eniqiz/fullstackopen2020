@@ -17,7 +17,7 @@ beforeEach(async () => {
   const promiseArrayUser = userObjects.map(user => user.save())
   await Promise.all(promiseArrayUser)
 
-  const userAdded = await User.findOne({username: 'example'})
+  const userAdded = await User.findOne({ username: 'example' })
 
   const blogObjects = helper.initialBlogs.map(blog => {
     const blogToAdd = new Blog(blog)
@@ -29,10 +29,10 @@ beforeEach(async () => {
 
   const query = await Blog.find({})
   let blogIds = []
-  for (b of query) {
+  for (let b of query) {
     blogIds = blogIds.concat(b._id)
   }
-  await User.findOneAndUpdate({username: 'example'}, {blogs: blogIds})
+  await User.findOneAndUpdate({ username: 'example' }, { blogs: blogIds })
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -69,8 +69,8 @@ describe('add blogs', () => {
     await api
       .post('/api/login')
       .send({
-        "username": "example",
-        "password": "secret"
+        'username': 'example',
+        'password': 'secret'
       })
       .then(response => jwtString = response.body.token)
   })
@@ -140,8 +140,8 @@ describe('deletion of a blog', () => {
     await api
       .post('/api/login')
       .send({
-        "username": "example",
-        "password": "secret"
+        'username': 'example',
+        'password': 'secret'
       })
       .expect(200)
       .then(response => jwtString = response.body.token)
@@ -170,8 +170,8 @@ describe('update likes of a blog', () => {
     await api
       .post('/api/login')
       .send({
-        "username": "example",
-        "password": "secret"
+        'username': 'example',
+        'password': 'secret'
       })
       .expect(200)
       .then(response => jwtString = response.body.token)
