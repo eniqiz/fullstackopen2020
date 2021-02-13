@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './App.css'
 
 const App = () => {
 const [blogs, setBlogs] = useState([])
@@ -10,6 +11,7 @@ const [title, setTitle] = useState('')
 const [author, setAuthor] = useState('')
 const [url, setUrl] = useState('')
 const [errorMessage, setErrorMessage] = useState(null)
+const [message, setMessage] = useState(null)
 const [username, setUsername] = useState('')
 const [password, setPassword] = useState('')
 const [user, setUser] = useState(null)
@@ -40,6 +42,10 @@ const addBlog = (event) => {
   blogService
     .create(blogObject)
     .then(returnedBlog => {
+      setMessage(`a new blog ${title} by ${author} added`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
       setBlogs(blogs.concat(returnedBlog))
       setTitle('')
       setAuthor('')
@@ -62,7 +68,7 @@ const handleLogin = async (event) => {
     setUsername('')
     setPassword('')
   } catch (exception) {
-    setErrorMessage('wrong credentials')
+    setErrorMessage('wrong username or password')
     setTimeout(() => {
       setErrorMessage(null)
     }, 5000)
@@ -77,6 +83,7 @@ const handleLogout = () => {
 const loginForm = () => (
   <div>
     <h2>Log in to application</h2>
+    <Notification message={message} errorMessage={errorMessage}/>
     <form onSubmit={handleLogin}>
       <div>username<input value={username} onChange={({target}) => setUsername(target.value)}/></div>
       <div>password<input value={password} onChange={({target}) => setPassword(target.value)} type="password"/></div>
@@ -104,11 +111,11 @@ const blogForm = () => (
 
 return (
   <div>
-    <Notification message={errorMessage} />
     {user === null ?
       loginForm() :
       <div>
         <h2>blogs</h2>
+        <Notification message={message} errorMessage={errorMessage}/>
         <p>{user.name} logged-in<button onClick={handleLogout}>logout</button></p>
         <h2>create new</h2>
         {blogForm()}
