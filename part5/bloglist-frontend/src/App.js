@@ -114,7 +114,7 @@ const App = () => {
           setUsername={setUsername}
           setPassword={setPassword}
         />
-          :
+        :
         <div>
           <h2>blogs</h2>
           <Notification message={message} errorMessage={errorMessage}/>
