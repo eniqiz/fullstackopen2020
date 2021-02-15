@@ -57,6 +57,16 @@ const App = () => {
       })
   }
 
+  const removeBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(returnedBlog => {
+        blogService.getAll().then(blogs =>
+          setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
+      )
+    })
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -110,7 +120,7 @@ const App = () => {
           <Notification message={message} errorMessage={errorMessage}/>
           <p>{user.name} logged-in<button onClick={handleLogout}>logout</button></p>
           {blogForm()}
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />)}
+          {blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog}/>)}
         </div>
       }
     </div>
