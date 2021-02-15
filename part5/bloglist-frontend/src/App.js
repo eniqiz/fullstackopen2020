@@ -21,8 +21,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
+    )
   }, [])
 
   useEffect(() => {
@@ -44,6 +44,16 @@ const App = () => {
           setMessage(null)
         }, 5000)
         setBlogs(blogs.concat(returnedBlog))
+      })
+  }
+
+  const likeBlog = (id, blogObject) => {
+    blogService
+      .update(id, blogObject)
+      .then(returnedBlog => {
+        blogService.getAll().then(blogs =>
+          setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
+        )
       })
   }
 
@@ -100,7 +110,7 @@ const App = () => {
           <Notification message={message} errorMessage={errorMessage}/>
           <p>{user.name} logged-in<button onClick={handleLogout}>logout</button></p>
           {blogForm()}
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+          {blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />)}
         </div>
       }
     </div>
