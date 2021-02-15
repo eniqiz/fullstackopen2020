@@ -25,15 +25,15 @@ const BlogForm = ({ addBlog }) => {
       <form onSubmit={addNewBlog}>
         <div>
           title:
-          <input value={title} onChange={({target}) => setTitle(target.value)} />
+          <input value={title} onChange={({ target }) => setTitle(target.value)} />
         </div>
         <div>
           author:
-          <input value={author} onChange={({target}) => setAuthor(target.value)} />
+          <input value={author} onChange={({ target }) => setAuthor(target.value)} />
         </div>
         <div>
           url:
-          <input value={url} onChange={({target}) => setUrl(target.value)} />
+          <input value={url} onChange={({ target }) => setUrl(target.value)} />
         </div>
         <button type="submit" >create</button>
       </form>

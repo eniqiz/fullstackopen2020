@@ -63,8 +63,8 @@ const App = () => {
       .then(returnedBlog => {
         blogService.getAll().then(blogs =>
           setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
-      )
-    })
+        )
+      })
   }
 
   const handleLogin = async (event) => {
