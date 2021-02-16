@@ -31,11 +31,11 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <div style={hideWhenVisible}>
+      <div style={hideWhenVisible} className='blog'>
         {blog.title} {blog.author}<button onClick={() => setBlogVisible(true)}>view</button>
       </div>
-      <div style={showWhenVisible}>
-        {blog.title} <button onClick={() => setBlogVisible(false)}>hide</button>
+      <div style={showWhenVisible} className='blog-detail'>
+        {blog.title} {blog.author}<button onClick={() => setBlogVisible(false)}>hide</button>
         <div>
           {blog.url}<br/>
           likes {blog.likes} <button onClick={likePlusBlog}>like</button><br/>
