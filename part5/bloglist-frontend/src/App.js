@@ -51,19 +51,18 @@ const App = () => {
     blogService
       .update(id, blogObject)
       .then(returnedBlog => {
-        blogService.getAll().then(blogs =>
-          setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
-        )
+        const newBlogs = blogs.map(element => element.id === returnedBlog.id ? returnedBlog : element)
+        setBlogs(newBlogs.sort((a, b) => (a.likes - b.likes)))
       })
   }
 
   const removeBlog = (id) => {
     blogService
       .remove(id)
+      //eslint-disable-next-line
       .then(returnedBlog => {
-        blogService.getAll().then(blogs =>
-          setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
-        )
+        const newBlogs = blogs.filter(element => element.id !== id)
+        setBlogs(newBlogs.sort((a, b) => (a.likes - b.likes)))
       })
   }
 
