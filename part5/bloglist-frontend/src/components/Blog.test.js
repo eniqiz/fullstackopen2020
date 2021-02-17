@@ -42,3 +42,32 @@ describe('test blog component', () => {
     expect(component.container).toHaveTextContent('10')
   })
 })
+
+test('click like button', () => {
+  const blog = {
+    title: 'blog to test',
+    author: 'tester',
+    url: 'example.com',
+    likes: 10,
+    user: {
+      username: 'example',
+      name: 'Example'
+    }
+  }
+
+  const mockHandler = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} likeBlog={mockHandler}/>
+  )
+
+  const button = component.getByText('view')
+  fireEvent.click(button)
+
+  const buttonLike = component.getByText('like')
+  fireEvent.click(buttonLike)
+  fireEvent.click(buttonLike)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
+
