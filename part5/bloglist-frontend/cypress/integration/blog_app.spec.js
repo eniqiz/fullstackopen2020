@@ -1,3 +1,5 @@
+import { func } from "prop-types"
+
 describe('Blog app', function() {
   beforeEach(function() {
       cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -31,6 +33,37 @@ describe('Blog app', function() {
       cy.get('.error')
         .should('contain', 'wrong username or password')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
+    })
+  })
+
+  describe.only('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('example')
+      cy.get('#password').type('secret')
+      cy.get('#login-button').click()
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('#title').type('newblog')
+      cy.get('#author').type('newauthor')
+      cy.get('#url').type('newurl')
+      cy.get('#create-blog').click()
+
+      cy.contains('a new blog newblog by newauthor added')
+    })
+
+    it('A blog can be liked', function() {
+      cy.contains('new blog').click()
+      cy.get('#title').type('newblog')
+      cy.get('#author').type('newauthor')
+      cy.get('#url').type('newurl')
+      cy.get('#create-blog').click()
+
+      cy.contains('view').click()
+      cy.contains('like').click()
+
+      cy.contains('likes 1')
     })
   })
 })
