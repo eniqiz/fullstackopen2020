@@ -38,9 +38,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.get('#username').type('example')
-      cy.get('#password').type('secret')
-      cy.get('#login-button').click()
+      cy.login({ username: 'example', password: 'secret' })
     })
 
     it('A blog can be created', function() {
@@ -66,7 +64,7 @@ describe('Blog app', function() {
       cy.contains('likes 1')
     })
 
-    it.only('A blog can be deleted', function() {
+    it('A blog can be deleted', function() {
       cy.contains('new blog').click()
       cy.get('#title').type('newblog-1')
       cy.get('#author').type('newauthor-1')
@@ -88,6 +86,17 @@ describe('Blog app', function() {
 
       cy.get('.blog').should('not.contain', 'newblog-1')
       cy.get('.blog').should('contain', 'newblog-2')
+    })
+
+    it('list blog in the order of likes', function() {
+      cy.createBlog({ title: 'newblog-1', author: 'newauthor-1', url: 'newurl-1', likes: 1 })
+      cy.createBlog({ title: 'newblog-2', author: 'newauthor-2', url: 'newurl-2', likes: 5 })
+      cy.createBlog({ title: 'newblog-3', author: 'newauthor-3', url: 'newurl-3', likes: 10 })
+
+      cy.reload()
+      cy.get('.blog').eq(0).should('contain', 'newblog-3')
+      cy.get('.blog').eq(1).should('contain', 'newblog-2')
+      cy.get('.blog').eq(2).should('contain', 'newblog-1')
     })
   })
 })

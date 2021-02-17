@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs.sort((a, b) => (a.likes - b.likes)))
+      setBlogs(blogs.sort((a, b) => (b.likes - a.likes)))
     )
   }, [])
 
@@ -52,7 +52,7 @@ const App = () => {
       .update(id, blogObject)
       .then(returnedBlog => {
         const newBlogs = blogs.map(element => element.id === returnedBlog.id ? returnedBlog : element)
-        setBlogs(newBlogs.sort((a, b) => (a.likes - b.likes)))
+        setBlogs(newBlogs.sort((a, b) => (b.likes - a.likes)))
       })
   }
 
@@ -62,7 +62,7 @@ const App = () => {
       //eslint-disable-next-line
       .then(returnedBlog => {
         const newBlogs = blogs.filter(element => element.id !== id)
-        setBlogs(newBlogs.sort((a, b) => (a.likes - b.likes)))
+        setBlogs(newBlogs.sort((a, b) => (b.likes - a.likes)))
       })
   }
 
