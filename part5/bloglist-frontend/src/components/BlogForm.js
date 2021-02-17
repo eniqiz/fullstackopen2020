@@ -25,7 +25,7 @@ const BlogForm = ({ addBlog }) => {
       <form onSubmit={addNewBlog}>
         <div>
           title:
-          <input value={title} onChange={({ target }) => setTitle(target.value)} />
+          <input value={title} onChange={({ target }) => setTitle(target.value)} id='title'/>
         </div>
         <div>
           author:
