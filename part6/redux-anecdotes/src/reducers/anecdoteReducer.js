@@ -44,7 +44,7 @@ export const createAnecdote = (content) => {
   }
 }
 
-export const initAnecdotes = (anecdotes) => {
+export const initAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
     dispatch({
