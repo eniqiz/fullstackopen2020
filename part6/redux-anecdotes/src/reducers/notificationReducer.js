@@ -15,13 +15,15 @@ const notificationReducer = (state = { message: '' }, action) => {
   }
 }
 
+let timeoutID;
 export const setNotification = (message, seconds) => {
   return async dispatch => {
     dispatch({
       type: 'NOTIFY',
       message: message
     })
-    setTimeout(() => dispatch({
+    clearTimeout(timeoutID)
+    timeoutID = setTimeout(() => dispatch({
       type: 'DELETE_NOTIFICATION',
       message: ''
     }), seconds * 1000)
