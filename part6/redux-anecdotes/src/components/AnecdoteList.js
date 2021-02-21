@@ -19,7 +19,13 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const Anecdotes = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state.anecdotes)
+  const anecdotes = useSelector(state => {
+    if (state.filter === '') {
+      return state.anecdotes
+    } else {
+      return state.anecdotes.filter(p => p.content.toLowerCase().indexOf(state.filter) !== -1)
+    }
+  })
 
   return (
     <div>
