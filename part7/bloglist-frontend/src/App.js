@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import blogService from './services/blogs'
-import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
-import './App.css'
-import { useDispatch, useSelector } from 'react-redux'
+import UserList from './components/UserList'
+import blogService from './services/blogs'
 import { setNotification } from './reducers/notificationReducer'
 import { initBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
+import { initUsers } from './reducers/usersReducer'
+import './App.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route, Link, useRouteMatch, useHistory } from "react-router-dom"
 
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
 
@@ -34,6 +34,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initBlogs())
+    dispatch(initUsers())
   }, [dispatch])
 
   const addBlog = (blogObject) => {
@@ -48,25 +49,6 @@ const App = () => {
 
   const removeABlog = (id) => {
     dispatch(removeBlog(id))
-  }
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      window.localStorage.setItem(
-        'loggedBlogAppUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      dispatch(login(user))
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(setNotification(null, 'wrong username or password', 5))
-    }
   }
 
   const handleLogout = () => {
@@ -86,22 +68,25 @@ const App = () => {
   return (
     <div>
       {user === null ?
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-        />
+        <LoginForm/>
         :
         <div>
           <h2>blogs</h2>
           <Notification />
           <p>{user.name} logged-in<button onClick={handleLogout}>logout</button></p>
-          {blogForm()}
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlog={likeABlog} removeBlog={removeABlog}/>)}
         </div>
       }
+      <Switch>
+        <Route path='/users'>
+          <UserList/>
+        </Route>
+        <Route path='/'>
+          <div>
+            {blogForm()}
+            {blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlog={likeABlog} removeBlog={removeABlog}/>)}
+          </div>
+        </Route>
+      </Switch>
     </div>
   )
 }

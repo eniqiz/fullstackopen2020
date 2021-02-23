@@ -1,31 +1,48 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Notification from './Notification'
+import { useField } from '../hooks/index'
+import loginService from '../services/login'
+import { useDispatch } from 'react-redux'
+import { login } from '../reducers/userReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { useHistory } from 'react-router-dom'
 
-const LoginForm = ({
-  handleLogin,
-  username,
-  password,
-  setUsername,
-  setPassword
-}) => (
-  <div>
-    <h2>Log in to application</h2>
-    <Notification />
-    <form onSubmit={handleLogin}>
-      <div>username<input id='username' value={username} onChange={( { target } ) => setUsername(target.value)}/></div>
-      <div>password<input id='password' value={password} onChange={( { target } ) => setPassword(target.value)} type="password"/></div>
-      <button id='login-button' type="submit">login</button>
-    </form>
-  </div>
-)
+const LoginForm = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-LoginForm.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  setUsername: PropTypes.func.isRequired,
-  setPassword: PropTypes.func.isRequired
+  const username = useField('text')
+  const password = useField('password')
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+        username: username.value,
+        password: password.value
+      })
+
+      window.localStorage.setItem(
+        'loggedBlogAppUser', JSON.stringify(user)
+      )
+      dispatch(login(user))
+      history.push('/')
+    } catch (exception) {
+      dispatch(setNotification(null, 'wrong username or password', 5))
+    }
+  }
+
+  return (
+    <div>
+      <h2>Log in to application</h2>
+      <Notification />
+      <form onSubmit={handleLogin}>
+        <div>username<input id='username' { ...username }/></div>
+        <div>password<input id='password' { ...password }/></div>
+        <button id='login-button' type="submit">login</button>
+      </form>
+    </div>
+  )
 }
 
 export default LoginForm
