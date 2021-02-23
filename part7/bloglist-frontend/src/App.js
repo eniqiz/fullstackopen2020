@@ -5,6 +5,7 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
+import UserInfo from './components/UserInfo'
 import blogService from './services/blogs'
 import { setNotification } from './reducers/notificationReducer'
 import { initBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
@@ -12,12 +13,13 @@ import { login, logout } from './reducers/userReducer'
 import { initUsers } from './reducers/usersReducer'
 import './App.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { Switch, Route, Link, useRouteMatch, useHistory } from "react-router-dom"
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
+  const users = useSelector(state => state.users)
 
   const blogFormRef = useRef()
 
@@ -65,6 +67,11 @@ const App = () => {
     </Togglable>
   )
 
+  const match = useRouteMatch('/users/:id')
+  const userInfo = match
+    ? users.find(u => u.id === match.params.id)
+    : null
+
   return (
     <div>
       {user === null ?
@@ -77,6 +84,9 @@ const App = () => {
         </div>
       }
       <Switch>
+        <Route path='/users/:id'>
+          <UserInfo userInfo={userInfo}/>
+        </Route>
         <Route path='/users'>
           <UserList/>
         </Route>
