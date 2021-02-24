@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { commentBlog, likeBlog, removeBlog } from '../reducers/blogReducer'
+import { Button, Form } from 'react-bootstrap'
 
 const BlogInfo = ({ blogInfo }) => {
   const dispatch = useDispatch()
@@ -36,16 +37,18 @@ const BlogInfo = ({ blogInfo }) => {
     <div>
       <h2>{blogInfo.title}</h2>
       <a href={blogInfo.url}>{blogInfo.url}</a><br/>
-      {blogInfo.likes} likes <button onClick={likePlusBlog}>like</button><br/>
+      {blogInfo.likes} likes <Button onClick={likePlusBlog} variant='light'>like</Button><br/>
       added by {blogInfo.author}<br/>
-      <button onClick={removeBlogAndBack}>remove</button>
+      <Button onClick={removeBlogAndBack} variant='danger'>remove</Button>
 
       <h3>comments</h3>
       <div>
-        <form onSubmit={addCommentToBlog}>
-          <input value={comment} onChange={(e) => setComment(e.target.value)} id='comment'/>
-          <button type='submit'>add comment</button>
-        </form>
+        <Form onSubmit={addCommentToBlog}>
+          <Form.Group>
+            <Form.Control value={comment} onChange={(e) => setComment(e.target.value)} id='comment'/>
+            <Button type='submit'>add comment</Button>
+          </Form.Group>
+        </Form>
       </div>
       <ul>
         {blogInfo.comments.map((c, i) => <li key={i}>{c}</li>)}

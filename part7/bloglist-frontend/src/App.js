@@ -15,6 +15,7 @@ import { initUsers } from './reducers/usersReducer'
 import './App.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 
 const App = () => {
@@ -71,7 +72,7 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <div className='container'>
       <div className='nav'>
         <Link to='/' className='nav-item'>blogs</Link>
         <Link to='/users' className='nav-item'>users</Link>
@@ -79,7 +80,7 @@ const App = () => {
           <Link to='/login' className='nav-item'>login</Link>
           :
           <div className='nav-item'>
-            {user.name} logged-in<button onClick={handleLogout}>logout</button>
+            {user.name} logged-in<Button onClick={handleLogout} variant='secondary'>logout</Button>
           </div>
         }
       </div>

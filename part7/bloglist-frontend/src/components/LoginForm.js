@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { login } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useHistory } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -36,11 +37,15 @@ const LoginForm = () => {
     <div>
       <h2>Log in to application</h2>
       <Notification />
-      <form onSubmit={handleLogin}>
-        <div>username<input id='username' { ...username }/></div>
-        <div>password<input id='password' { ...password }/></div>
-        <button id='login-button' type="submit">login</button>
-      </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username</Form.Label>
+          <Form.Control id='username' { ...username }/>
+          <Form.Label>password</Form.Label>
+          <Form.Control id='password' { ...password }/>
+          <Button id='login-button' type="submit" variant="primary">login</Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }
