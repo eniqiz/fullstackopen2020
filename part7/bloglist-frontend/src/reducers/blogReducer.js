@@ -20,6 +20,16 @@ const reducer = (state = [], action) => {
     return state
       .filter(e => e.id !== action.data)
       .sort((a, b) => (b.likes - a.likes))
+  case 'COMMENT': {
+    const id = action.id
+    const blogToComment = state.find(e => e.id === id)
+    const commentedBlog = {
+      ...blogToComment,
+      comments: blogToComment.comments.concat(action.comment)
+    }
+    const newState = state.map(b => b.id !== id ? b : commentedBlog)
+    return newState.sort((a, b) => (b.likes - a.likes))
+  }
   default:
     return state
   }
@@ -62,6 +72,18 @@ export const removeBlog = (id) => {
     dispatch({
       type: 'REMOVE',
       data: id
+    })
+  }
+}
+
+export const commentBlog = (id, comment) => {
+  return async dispatch => {
+    //eslint-disable-next-line
+    const updatedBlog = await blogService.comment(id, comment)
+    dispatch({
+      type: 'COMMENT',
+      id,
+      comment
     })
   }
 }

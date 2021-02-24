@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { commentBlog, likeBlog, removeBlog } from '../reducers/blogReducer'
 
 const BlogInfo = ({ blogInfo }) => {
   const dispatch = useDispatch()
   const history = useHistory()
+
+  const [comment, setComment] = useState('')
 
   if (!blogInfo) {
     return null
@@ -25,6 +27,11 @@ const BlogInfo = ({ blogInfo }) => {
     history.push('/')
   }
 
+  const addCommentToBlog = (e) => {
+    e.preventDefault()
+    dispatch(commentBlog(blogInfo.id, comment))
+  }
+
   return (
     <div>
       <h2>{blogInfo.title}</h2>
@@ -34,6 +41,12 @@ const BlogInfo = ({ blogInfo }) => {
       <button onClick={removeBlogAndBack}>remove</button>
 
       <h3>comments</h3>
+      <div>
+        <form onSubmit={addCommentToBlog}>
+          <input value={comment} onChange={(e) => setComment(e.target.value)} id='comment'/>
+          <button type='submit'>add comment</button>
+        </form>
+      </div>
       <ul>
         {blogInfo.comments.map((c, i) => <li key={i}>{c}</li>)}
       </ul>

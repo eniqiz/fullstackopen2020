@@ -55,6 +55,13 @@ blogsRouter.delete('/:id', async (request, response) => {
   return response.status(401).json({ error: 'Unauthorized' })
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const blogToComment = await Blog.findById(request.params.id)
+  const updatedComments = blogToComment.comments.concat(request.body.comment)
+  const updatedBlog = await Blog.updateOne({ _id: request.params.id }, { $set: { comments: updatedComments } })
+  response.json(updatedBlog)
+})
+
 blogsRouter.put('/:id', async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!request.token || !decodedToken.id) {
@@ -74,13 +81,6 @@ blogsRouter.put('/:id', async (request, response) => {
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-  response.json(updatedBlog)
-})
-
-blogsRouter.post('/:id/comments', async (request, response) => {
-  const blogToComment = await Blog.findById(request.params.id)
-  const updatedComments = blogToComment.comments.concat(request.body.comment)
-  const updatedBlog = await Blog.updateOne({ _id: request.params.id }, { $set: { comments: updatedComments } })
   response.json(updatedBlog)
 })
 
