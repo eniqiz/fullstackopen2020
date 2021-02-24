@@ -14,7 +14,7 @@ import { login, logout } from './reducers/userReducer'
 import { initUsers } from './reducers/usersReducer'
 import './App.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
 
 
 const App = () => {
@@ -72,15 +72,17 @@ const App = () => {
 
   return (
     <div>
-      {user === null ?
-        <LoginForm/>
-        :
-        <div>
-          <h2>blogs</h2>
-          <Notification />
-          <p>{user.name} logged-in<button onClick={handleLogout}>logout</button></p>
-        </div>
-      }
+      <div className='nav'>
+        <Link to='/' className='nav-item'>blogs</Link>
+        <Link to='/users' className='nav-item'>users</Link>
+        {user === null ?
+          <Link to='/login' className='nav-item'>login</Link>
+          :
+          <div className='nav-item'>
+            {user.name} logged-in<button onClick={handleLogout}>logout</button>
+          </div>
+        }
+      </div>
       <Switch>
         <Route path='/users/:id'>
           <UserInfo userInfo={userInfo}/>
@@ -91,8 +93,13 @@ const App = () => {
         <Route path='/users'>
           <UserList/>
         </Route>
+        <Route path='/login'>
+          <LoginForm />
+        </Route>
         <Route path='/'>
           <div>
+            <h2>blogs</h2>
+            <Notification />
             {blogForm()}
             {blogs.map(blog => <Blog key={blog.id} blog={blog}/>)}
           </div>
