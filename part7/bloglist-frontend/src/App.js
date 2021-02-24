@@ -6,9 +6,10 @@ import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
 import UserInfo from './components/UserInfo'
+import BlogInfo from './components/BlogInfo'
 import blogService from './services/blogs'
 import { setNotification } from './reducers/notificationReducer'
-import { initBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
+import { initBlogs, createBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { initUsers } from './reducers/usersReducer'
 import './App.css'
@@ -45,14 +46,6 @@ const App = () => {
     dispatch(createBlog(blogObject))
   }
 
-  const likeABlog = (id, blogObject) => {
-    dispatch(likeBlog(id, blogObject))
-  }
-
-  const removeABlog = (id) => {
-    dispatch(removeBlog(id))
-  }
-
   const handleLogout = () => {
     logout()
     window.localStorage.clear()
@@ -72,6 +65,11 @@ const App = () => {
     ? users.find(u => u.id === match.params.id)
     : null
 
+  const matchBlog = useRouteMatch('/blogs/:id')
+  const blogInfo = matchBlog
+    ? blogs.find(b => b.id === matchBlog.params.id)
+    : null
+
   return (
     <div>
       {user === null ?
@@ -87,13 +85,16 @@ const App = () => {
         <Route path='/users/:id'>
           <UserInfo userInfo={userInfo}/>
         </Route>
+        <Route path='/blogs/:id'>
+          <BlogInfo blogInfo={blogInfo}/>
+        </Route>
         <Route path='/users'>
           <UserList/>
         </Route>
         <Route path='/'>
           <div>
             {blogForm()}
-            {blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlog={likeABlog} removeBlog={removeABlog}/>)}
+            {blogs.map(blog => <Blog key={blog.id} blog={blog}/>)}
           </div>
         </Route>
       </Switch>
