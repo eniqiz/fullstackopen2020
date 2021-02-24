@@ -32,6 +32,11 @@ const BlogInfo = ({ blogInfo }) => {
       {blogInfo.likes} likes <button onClick={likePlusBlog}>like</button><br/>
       added by {blogInfo.author}<br/>
       <button onClick={removeBlogAndBack}>remove</button>
+
+      <h3>comments</h3>
+      <ul>
+        {blogInfo.comments.map((c, i) => <li key={i}>{c}</li>)}
+      </ul>
     </div>
   )
 }
